@@ -11,7 +11,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.bytespectra.musicplayer.MainActivity
+import com.bytespectra.musicplayer.ui.MainActivity
 import com.bytespectra.musicplayer.R
 import com.bytespectra.musicplayer.domain.enum.PlayerAction
 import com.bytespectra.musicplayer.domain.model.MusicData
@@ -25,19 +25,16 @@ import kotlin.math.roundToInt
 
 class MusicService : Service() {
 
-    companion object {
-        const val CHANNEL_ID = "music_player_channel"
-    }
+    private val CHANNEL_ID = "MusicPlayerChannel"
 
     private val mediaPlayer: MediaPlayer by lazy { MediaPlayer() }
     private var defaultCoroutineScope = CoroutineScope(Dispatchers.Default)
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startNotification()
 
-        registerReceiver(playerStateReceiver, IntentFilter(Util.PLAYER_STATE_CHANNEL), Context.RECEIVER_NOT_EXPORTED)
-        registerReceiver(sliderChangeReceiver, IntentFilter(Util.PLAYER_STATE_CHANNEL), Context.RECEIVER_NOT_EXPORTED)
+        registerReceiver(playerStateReceiver, IntentFilter(Util.PLAYER_STATE_CHANNEL))
+        registerReceiver(sliderChangeReceiver, IntentFilter(Util.PLAYER_STATE_CHANNEL))
 
         return START_STICKY
     }
@@ -55,7 +52,7 @@ class MusicService : Service() {
         startForeground(1, notification)
     }
 
-    val playerStateReceiver = object : BroadcastReceiver() {
+    private val playerStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
                 it.getParcelableExtra<PlayerState>(Util.PLAYER)?.let { play ->
@@ -65,7 +62,7 @@ class MusicService : Service() {
         }
     }
 
-    val sliderChangeReceiver = object : BroadcastReceiver() {
+    private val sliderChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
                 updateDuration(it.getFloatExtra(Util.SLIDER_CHANGE_VALUE, 0f))

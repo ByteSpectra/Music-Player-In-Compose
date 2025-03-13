@@ -7,7 +7,7 @@ import android.os.Build
 
 class MusicApplication: Application() {
 
-    private val CHANNEL_ID = "music_player_channel"
+    private val CHANNEL_ID = "MusicPlayerChannel"
 
     override fun onCreate() {
         super.onCreate()
@@ -23,7 +23,6 @@ class MusicApplication: Application() {
         }
     }
 
-    @Deprecated("Deprecated in Java", ReplaceWith("super.onLowMemory()", "android.app.Application"))
     override fun onLowMemory() {
         super.onLowMemory()
     }

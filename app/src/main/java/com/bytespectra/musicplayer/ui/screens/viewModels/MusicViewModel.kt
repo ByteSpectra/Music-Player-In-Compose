@@ -215,11 +215,13 @@ class MusicViewModel: ViewModel() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let { data ->
                 val currentPosition = data.getLongExtra("currentPosition", 0)
-                val duration = data.getFloatExtra("duration", 0f)
+                val duration = data.getLongExtra("duration", 0)
 
                 _musicState.value = _musicState.value.copy(
                     sliderState = currentPosition.toFloat()
                 )
+                stopCounter = true
+                processCounter()
             }
         }
     }
